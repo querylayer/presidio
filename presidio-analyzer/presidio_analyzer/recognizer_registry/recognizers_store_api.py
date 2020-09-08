@@ -42,8 +42,8 @@ class RecognizerStoreApi:
             # todo: task 812: Change to pub sub pattern
             last_hash = self.rs_stub.ApplyGetHash(
                 hash_request).recognizersHash
-        except grpc.RpcError:
-            logger.error("Failed to get recognizers hash")
+        except grpc.RpcError as e:
+            logger.error('Failed to get recognizers hash: {err}'.format(err=str(e)))
             return None
 
         if not last_hash:

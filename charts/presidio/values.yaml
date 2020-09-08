@@ -44,6 +44,9 @@ analyzer:
   name: presidio-analyzer
   replicas: 1
   imagePullPolicy: Always
+  enableTextAnalyticsRecognizer: 1 # 1=enabled, 0=disabled
+  textAnalyticsKey: <key>
+  textAnalyticsEndpoint: <endpoint>
   container:
     resources:
       requests:

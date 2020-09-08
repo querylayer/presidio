@@ -12,6 +12,9 @@ grpcio = "*"
 protobuf = "*"
 tldextract = "*"
 knack = "*"
+pylint = "==2.3.1"
+flake8 = "==3.7.9"
+pytest = "*"
 
 [dev-packages]
 pytest = "*"

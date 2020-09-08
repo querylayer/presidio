@@ -19,6 +19,7 @@ from presidio_analyzer.predefined_recognizers import (
     UsSsnRecognizer,
     SgFinRecognizer,
     SpacyRecognizer,
+    TextAnalyticsRecognizer,
 )
 
 
@@ -27,7 +28,7 @@ class RecognizerRegistry:
     Detects, registers and holds all recognizers to be used by the analyzer
     """
 
-    def __init__(self, recognizer_store_api=RecognizerStoreApi(), recognizers=None):
+    def __init__(self, recognizer_store_api=RecognizerStoreApi(), recognizers=None, enable_text_analytics_recognizer=True):
         """
         :param recognizer_store_api: An instance of a class that has custom
                recognizers management functionallity (insert, update, get,
@@ -51,6 +52,7 @@ class RecognizerRegistry:
         self.loaded_timestamp = None
         self.loaded_custom_recognizers = []
         self.store_api = recognizer_store_api
+        self.enable_text_analytics_recognizer = enable_text_analytics_recognizer
 
     def load_predefined_recognizers(self, languages=None, nlp_engine="spacy"):
         #   TODO: Change the code to dynamic loading -
@@ -83,6 +85,7 @@ class RecognizerRegistry:
                 IbanRecognizer,
                 IpRecognizer,
                 NlpRecognizer,
+                TextAnalyticsRecognizer
             ],
         }
         for lang in languages:
