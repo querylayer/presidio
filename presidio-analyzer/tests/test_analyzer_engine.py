@@ -160,7 +160,7 @@ def test_analyze_with_multiple_predefined_recognizers(
         all_fields=False,
     )
 
-    assert len(results) == 7
+    assert len(results) == 2
     medium_regex_score = 0.5  # see UsPhoneRecognizer.PATTERNS
     context_similarity_factor = 0.35  # PatternRecognizer.CONTEXT_SIMILARITY_FACTOR
     assert_result(results[0], "CREDIT_CARD", 14, 33, max_score)
@@ -471,7 +471,7 @@ def test_when_analyze_then_apptracer_has_value(
         all_fields=False,
         trace=True,
     )
-    assert len(results) == 8
+    assert len(results) == 3
     for result in results:
         assert result.analysis_explanation is not None
     assert app_tracer_mock.get_msg_counter() == 2
@@ -498,7 +498,7 @@ def test_when_threshold_is_zero_all_results_pass(loaded_registry, unit_test_guid
         score_threshold=0,
     )
 
-    assert len(results) == 7
+    assert len(results) == 2
 
 
 def test_when_threshold_is_more_than_half_only_credit_card_passes(
@@ -523,7 +523,7 @@ def test_when_threshold_is_more_than_half_only_credit_card_passes(
         all_fields=False,
     )
 
-    assert len(results) == 6
+    assert len(results) == 1
 
 
 def test_when_default_threshold_is_more_than_half_only_one_passes(
@@ -549,7 +549,7 @@ def test_when_default_threshold_is_more_than_half_only_one_passes(
         all_fields=False,
     )
 
-    assert len(results) == 6
+    assert len(results) == 1
 
 
 def test_when_default_threshold_is_zero_all_results_pass(
@@ -573,7 +573,7 @@ def test_when_default_threshold_is_zero_all_results_pass(
         all_fields=False,
     )
 
-    assert len(results) == 7
+    assert len(results) == 2
 
 
 @pytest.mark.slow
@@ -659,7 +659,7 @@ def test_demo_text(unit_test_guid, nlp_engine):
     assert len([entity for entity in detected_entities if entity == "US_PASSPORT"]) == 1
     assert len([entity for entity in detected_entities if entity == "US_SSN"]) == 1
 
-    assert len(results) == 40
+    assert len(results) == 19
 
 
 def test_get_recognizers_returns_predefined(nlp_engine):
@@ -669,7 +669,7 @@ def test_get_recognizers_returns_predefined(nlp_engine):
     request = RecognizersAllRequest(language="en")
     response = analyze_engine.GetAllRecognizers(request, None)
     # there are 16 predefined recognizers that detect the 17 entities
-    assert len(response) == 16
+    assert len(response) == 15
 
 
 def test_get_recognizers_returns_custom():
@@ -687,7 +687,7 @@ def test_get_recognizers_returns_custom():
     request = RecognizersAllRequest(language="en")
     response = analyze_engine.GetAllRecognizers(request, None)
     # there are 16 predefined recognizers and one custom
-    assert len(response) == 17
+    assert len(response) == 16
     rocket_recognizer = [
         recognizer
         for recognizer in response
@@ -713,11 +713,11 @@ def test_get_recognizers_returns_added_custom():
     request = RecognizersAllRequest(language="en")
     response = analyze_engine.GetAllRecognizers(request, None)
     # there are 16 predefined recognizers
-    assert len(response) == 16
+    assert len(response) == 15
     recognizers_store_api_mock.add_custom_pattern_recognizer(pattern_recognizer)
     response = analyze_engine.GetAllRecognizers(request, None)
     # there are 16 predefined recognizers and one custom
-    assert len(response) == 17
+    assert len(response) == 16
 
 
 def test_get_recognizers_returns_supported_language():

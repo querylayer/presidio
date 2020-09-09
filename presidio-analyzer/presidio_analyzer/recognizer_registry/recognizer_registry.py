@@ -54,7 +54,7 @@ class RecognizerRegistry:
         self.loaded_custom_recognizers = []
         self.store_api = recognizer_store_api
         if enable_text_analytics_recognizer is None:
-            self.enable_text_analytics_recognizer = True if os.environ.get('ENABLE_TEXT_ANALYTICS_RECOGNIZER').lower() == 'true' else False
+            self.enable_text_analytics_recognizer = True if os.environ.get('ENABLE_TEXT_ANALYTICS_RECOGNIZER', '').lower() == 'true' else False
         else:
             self.enable_text_analytics_recognizer = False
 
