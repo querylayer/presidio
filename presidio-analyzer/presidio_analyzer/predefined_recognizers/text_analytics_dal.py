@@ -15,8 +15,8 @@ class TextAnalyticsDal:
         """
         self.logger = logger
         self.tolerate_errors = tolerate_errors
-        self.endpoint = os.environ.get('TEXT_ANALYTICS_ENDPOINT', 'https://skyfer-pii-detector.cognitiveservices.azure.com')
-        self.key = os.environ.get('TEXT_ANALYTICS_KEY', '9d5287acaea6414c9206942062ef0bee')
+        self.endpoint = os.environ.get('TEXT_ANALYTICS_ENDPOINT')
+        self.key = os.environ.get('TEXT_ANALYTICS_KEY')
         self.api_path = '/text/analytics/v3.0-preview.1/entities/recognition/'
         self.api_classes = ['general', 'pii'] # request both general data and pii data 
         self.failed_to_load = False
@@ -59,7 +59,6 @@ class TextAnalyticsDal:
             ]
         }
         params = {
-            'domain': 'phi',
             'model-version': '2020-04-01'
         }
         data = None
@@ -71,7 +70,7 @@ class TextAnalyticsDal:
                 if data is None:
                     data = d
                 else:
-                    data['documents'].extend(d['documents'])
+                    data['documents'][0]['entities'].extend(d['documents'][0]['entities'])
         except Exception as e:
             self.logger.error("Could not request Text Analytics service", e)
 

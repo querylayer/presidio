@@ -1,5 +1,6 @@
 import time
 import logging
+import os
 
 from presidio_analyzer.recognizer_registry import RecognizerStoreApi
 from presidio_analyzer.predefined_recognizers import (
@@ -28,7 +29,7 @@ class RecognizerRegistry:
     Detects, registers and holds all recognizers to be used by the analyzer
     """
 
-    def __init__(self, recognizer_store_api=RecognizerStoreApi(), recognizers=None, enable_text_analytics_recognizer=True):
+    def __init__(self, recognizer_store_api=RecognizerStoreApi(), recognizers=None, enable_text_analytics_recognizer=None):
         """
         :param recognizer_store_api: An instance of a class that has custom
                recognizers management functionallity (insert, update, get,
@@ -52,7 +53,10 @@ class RecognizerRegistry:
         self.loaded_timestamp = None
         self.loaded_custom_recognizers = []
         self.store_api = recognizer_store_api
-        self.enable_text_analytics_recognizer = enable_text_analytics_recognizer
+        if enable_text_analytics_recognizer is None:
+            self.enable_text_analytics_recognizer = True if os.environ.get('ENABLE_TEXT_ANALYTICS_RECOGNIZER').lower() == 'true' else False
+        else:
+            self.enable_text_analytics_recognizer = False
 
     def load_predefined_recognizers(self, languages=None, nlp_engine="spacy"):
         #   TODO: Change the code to dynamic loading -
@@ -84,8 +88,7 @@ class RecognizerRegistry:
                 EmailRecognizer,
                 IbanRecognizer,
                 IpRecognizer,
-                NlpRecognizer,
-                TextAnalyticsRecognizer
+                NlpRecognizer
             ],
         }
         for lang in languages:
@@ -95,6 +98,9 @@ class RecognizerRegistry:
                 rc(supported_language=lang) for rc in recognizers_map.get("ALL", [])
             ]
             self.recognizers.extend(all_recognizers)
+        
+        if self.enable_text_analytics_recognizer:
+            self.recognizers.extend([TextAnalyticsRecognizer()])
 
     def get_recognizers(self, language, entities=None, all_fields=False):
         """

@@ -36,7 +36,6 @@ class AnalyzerEngine(analyze_pb2_grpc.AnalyzeServiceServicer):
         responses from custom recognizers as well
         (only applicable for the full Presidio service)
         """
-        text_analytics_env_var = os.environ.get('ENABLE_TEXT_ANALYTICS_RECOGNIZER', True)
         if not nlp_engine:
             logger.info("nlp_engine not provided. Creating new "
                         "SpacyNlpEngine instance")
@@ -48,7 +47,7 @@ class AnalyzerEngine(analyze_pb2_grpc.AnalyzeServiceServicer):
                 recognizer_store_api = RecognizerStoreApi()
             else:
                 recognizer_store_api = None
-            registry = RecognizerRegistry(recognizer_store_api=recognizer_store_api, enable_text_analytics_recognizer=text_analytics_env_var)
+            registry = RecognizerRegistry(recognizer_store_api=recognizer_store_api)
         if not app_tracer:
             app_tracer = AppTracer()
 
