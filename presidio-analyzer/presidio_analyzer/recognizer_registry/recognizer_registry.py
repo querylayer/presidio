@@ -3,6 +3,7 @@ import logging
 import os
 
 from presidio_analyzer.recognizer_registry import RecognizerStoreApi
+from presidio_analyzer import PresidioLogger
 from presidio_analyzer.predefined_recognizers import (
     NLP_RECOGNIZERS,
     CreditCardRecognizer,
@@ -23,13 +24,16 @@ from presidio_analyzer.predefined_recognizers import (
     TextAnalyticsRecognizer,
 )
 
+logger = PresidioLogger("presidio")
+
 
 class RecognizerRegistry:
     """
     Detects, registers and holds all recognizers to be used by the analyzer
     """
 
-    def __init__(self, recognizer_store_api=RecognizerStoreApi(), recognizers=None, enable_text_analytics_recognizer=None):
+    def __init__(self, recognizer_store_api=RecognizerStoreApi(), recognizers=None,
+                 enable_text_analytics_recognizer=None):
         """
         :param recognizer_store_api: An instance of a class that has custom
                recognizers management functionallity (insert, update, get,
@@ -54,7 +58,9 @@ class RecognizerRegistry:
         self.loaded_custom_recognizers = []
         self.store_api = recognizer_store_api
         if enable_text_analytics_recognizer is None:
-            self.enable_text_analytics_recognizer = True if os.environ.get('ENABLE_TEXT_ANALYTICS_RECOGNIZER', '').lower() == 'true' else False
+            env_enable_ta = os.environ.get('ENABLE_TEXT_ANALYTICS_RECOGNIZER', '')
+            env_enable_ta = env_enable_ta.lower()
+            self.enable_text_analytics_recognizer = env_enable_ta == 'true'
         else:
             self.enable_text_analytics_recognizer = False
 
@@ -98,7 +104,7 @@ class RecognizerRegistry:
                 rc(supported_language=lang) for rc in recognizers_map.get("ALL", [])
             ]
             self.recognizers.extend(all_recognizers)
-        
+
         if self.enable_text_analytics_recognizer:
             self.recognizers.extend([TextAnalyticsRecognizer()])
 

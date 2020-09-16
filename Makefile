@@ -1,4 +1,4 @@
-DOCKER_REGISTRY    ?= presidio.azurecr.io
+DOCKER_REGISTRY    ?= presidio
 DOCKER_BUILD_FLAGS :=
 LDFLAGS            :=
 

@@ -1,6 +1,5 @@
 import json
 import uuid
-import os
 
 from presidio_analyzer import PresidioLogger, RecognizerRegistry
 from presidio_analyzer.app_tracer import AppTracer

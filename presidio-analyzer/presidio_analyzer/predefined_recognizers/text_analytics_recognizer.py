@@ -1,9 +1,7 @@
-import json
 from presidio_analyzer import RemoteRecognizer, RecognizerResult
 
 from presidio_analyzer.predefined_recognizers.text_analytics_dal \
     import TextAnalyticsDal
-
 
 TYPES_MAPPING = {
         'Product': 'COMPUTER_PRODUCTS',
@@ -37,7 +35,6 @@ TYPES_MAPPING = {
         'Quantity_Temperature': 'TEMPERATURE',
         'Age': 'AGE',
         'Azure DocumentDB Auth Key': 'AZURE_DOCDB_AUTH_KEY',
-        'Azure IAAS Database Connection String and Azure SQL Connection String': 'AZURE_IAAS_CONN_STRING',
         'Azure SQL Connection String': 'AZURE_SQL_CONN_STRING',
         'SQL Server Connection String': 'AZURE_SQL_CONN_STRING',
         'Azure IoT Connection String': 'AZURE_IOT_CONNECTION_STRING',
@@ -181,6 +178,7 @@ TYPES_MAPPING = {
         'U.S. Drug Enforcement Agency (DEA) number': 'US_DEA_NUMBER'
     }
 
+
 class TextAnalyticsRecognizer(RemoteRecognizer):
     """
     Use Azure Text Analytics service to detect PII entities.
@@ -188,8 +186,6 @@ class TextAnalyticsRecognizer(RemoteRecognizer):
 
     SUPPORTED_ENTITIES = set(TYPES_MAPPING.values())
     DEFAULT_EXPLANATION = "Identified as {} by Text Analytics"
-
-    
 
     def __init__(self, text_analytics_dal=None, supported_language='en'):
         super().__init__(supported_entities=self.SUPPORTED_ENTITIES,
@@ -226,7 +222,13 @@ class TextAnalyticsRecognizer(RemoteRecognizer):
         self.logger.debug("analyze was called")
         try:
             data = self.dal.analyze_pii_data(text)
-            return self.convert_to_analyze_response(data)
+            resulting_entities = self.convert_to_analyze_response(data)
+            if entities is None:  # pylint: disable=no-else-return
+                return resulting_entities
+            else:
+                return [finding
+                        for finding in resulting_entities
+                        if finding.entity_type in entities]
         except Exception as e:  # pylint: disable=broad-except
             self.logger.error("Failed to execute request to "
                               "Text Analytics. {}", e)
@@ -248,9 +250,13 @@ class TextAnalyticsRecognizer(RemoteRecognizer):
                 return result
 
         for entity in svc_response['documents'][0]['entities']:
+            entity_type = TextAnalyticsRecognizer.__convert_to_presidio_type(
+                entity['type'],
+                subtype=entity.get('subtype')
+                )
+
             recognizer_result = \
-                RecognizerResult(TextAnalyticsRecognizer.
-                                 __convert_to_presidio_type(entity['type'], subtype=entity.get('subtype')),
+                RecognizerResult(entity_type,
                                  entity['offset'],
                                  entity['offset'] + entity['length'],
                                  entity['score'],
@@ -261,8 +267,9 @@ class TextAnalyticsRecognizer(RemoteRecognizer):
     @staticmethod
     def __convert_to_presidio_type(ta_type, **kwargs):
         subtype = kwargs.get('subtype', False)
-        if subtype:
+        if subtype:  # pylint: disable=no-else-return
             presidio_type = '{}_{}'.format(ta_type, subtype)
-            return TYPES_MAPPING.get(presidio_type) or TYPES_MAPPING.get(ta_type) or presidio_type
+            new_type = TYPES_MAPPING.get(presidio_type) or TYPES_MAPPING.get(ta_type)
+            return new_type or presidio_type
         else:
             return TYPES_MAPPING.get(ta_type) or ta_type
