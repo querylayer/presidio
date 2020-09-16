@@ -1,5 +1,5 @@
 DOCKER_REGISTRY    ?= presidio
-QL_REGISTRY		   ?= querylayer.registry.com
+QL_REGISTRY		   ?= registry.querylayer.com
 DOCKER_BUILD_FLAGS :=
 LDFLAGS            :=
 
