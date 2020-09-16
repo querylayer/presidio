@@ -1,4 +1,5 @@
 DOCKER_REGISTRY    ?= presidio
+QL_REGISTRY		   ?= querylayer.registry.com
 DOCKER_BUILD_FLAGS :=
 LDFLAGS            :=
 
@@ -73,9 +74,9 @@ docker-build-python: $(addsuffix -dpypiimage,$(PYTHON_IMAGES))
 # in local/dev environment the container is built with Dockerfile.local which uses the local dev environment and code.
 # in the automated CI process, PIP_EXTRA_INDEX_URL is defined and Dockerfile is built which uses the published wheel.
 ifndef PIP_EXTRA_INDEX_URL
-	docker build $(DOCKER_BUILD_FLAGS) --build-arg REGISTRY=$(DOCKER_REGISTRY) --build-arg VERSION=$(VERSION) --build-arg PRESIDIO_DEPS_LABEL=$(PRESIDIO_DEPS_LABEL) -t $(DOCKER_REGISTRY)/$*:$(PRESIDIO_LABEL) -f $*/Dockerfile.local .
+	docker build $(DOCKER_BUILD_FLAGS) --build-arg REGISTRY=$(DOCKER_REGISTRY) --build-arg VERSION=$(VERSION) --build-arg PRESIDIO_DEPS_LABEL=$(PRESIDIO_DEPS_LABEL) -t $(QL_REGISTRY)/$*:$(PRESIDIO_LABEL) -f $*/Dockerfile.local .
 else
-	docker build $(DOCKER_BUILD_FLAGS) --build-arg REGISTRY=$(DOCKER_REGISTRY) --build-arg PIP_EXTRA_INDEX_URL=$(PIP_EXTRA_INDEX_URL) --build-arg VERSION=$(WHEEL_VERSION) --build-arg PRESIDIO_DEPS_LABEL=$(PRESIDIO_DEPS_LABEL) -t $(DOCKER_REGISTRY)/$*:$(PRESIDIO_LABEL) -f $*/Dockerfile .
+	docker build $(DOCKER_BUILD_FLAGS) --build-arg REGISTRY=$(DOCKER_REGISTRY) --build-arg PIP_EXTRA_INDEX_URL=$(PIP_EXTRA_INDEX_URL) --build-arg VERSION=$(WHEEL_VERSION) --build-arg PRESIDIO_DEPS_LABEL=$(PRESIDIO_DEPS_LABEL) -t $(QL_REGISTRY)/$*:$(PRESIDIO_LABEL) -f $*/Dockerfile .
 endif
 
 # You must be logged into DOCKER_REGISTRY before you can push.
