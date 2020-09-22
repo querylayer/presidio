@@ -75,7 +75,7 @@ class RecognizerRegistry:
         if not languages:
             languages = ["en"]
 
-        NlpRecognizer = NLP_RECOGNIZERS.get(nlp_engine, SpacyRecognizer)
+        #NlpRecognizer = NLP_RECOGNIZERS.get(nlp_engine, SpacyRecognizer) uncomment to register spacy
         recognizers_map = {
             "en": [
                 UsBankRecognizer,
