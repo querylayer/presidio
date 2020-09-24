@@ -104,7 +104,7 @@ def serve_command_handler(
     logger.debug(
         f"Loading predefined recognizers: {nlp_engine_opts.keys()} | {nlp_engine_name}"
     )
-    registry.load_predefined_recognizers(list(nlp_engine_opts.keys()), nlp_engine_name)
+    registry.load_predefined_recognizers(list(nlp_engine_opts.keys()))
     logger.debug(f"RecognizerRegistry: {registry.recognizers}")
     analyze_pb2_grpc.add_AnalyzeServiceServicer_to_server(
         AnalyzerEngine(

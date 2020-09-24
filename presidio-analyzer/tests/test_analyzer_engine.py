@@ -431,8 +431,6 @@ def test_when_allFields_is_true_full_recognizers_list_return_all_fields(nlp_engi
     response = analyze_engine.Apply(request, None)
     returned_entities = [field.field.name for field in response.analyzeResults]
     assert response.analyzeResults is not None
-    assert "PERSON" in returned_entities
-    assert "LOCATION" in returned_entities
     assert "DOMAIN_NAME" in returned_entities
 
 
@@ -471,7 +469,7 @@ def test_when_analyze_then_apptracer_has_value(
         all_fields=False,
         trace=True,
     )
-    assert len(results) == 3
+    assert len(results) == 2
     for result in results:
         assert result.analysis_explanation is not None
     assert app_tracer_mock.get_msg_counter() == 2
@@ -637,15 +635,12 @@ def test_demo_text(unit_test_guid, nlp_engine):
 
     assert len([entity for entity in detected_entities if entity == "CREDIT_CARD"]) == 1
     assert len([entity for entity in detected_entities if entity == "CRYPTO"]) == 1
-    assert len([entity for entity in detected_entities if entity == "DATE_TIME"]) == 1
     assert len([entity for entity in detected_entities if entity == "DOMAIN_NAME"]) == 4
     assert (
         len([entity for entity in detected_entities if entity == "EMAIL_ADDRESS"]) == 2
     )
     assert len([entity for entity in detected_entities if entity == "IBAN_CODE"]) == 1
     assert len([entity for entity in detected_entities if entity == "IP_ADDRESS"]) == 1
-    assert len([entity for entity in detected_entities if entity == "LOCATION"]) == 1
-    assert len([entity for entity in detected_entities if entity == "PERSON"]) == 2
     assert (
         len([entity for entity in detected_entities if entity == "PHONE_NUMBER"]) == 1
     )
@@ -659,7 +654,7 @@ def test_demo_text(unit_test_guid, nlp_engine):
     assert len([entity for entity in detected_entities if entity == "US_PASSPORT"]) == 1
     assert len([entity for entity in detected_entities if entity == "US_SSN"]) == 1
 
-    assert len(results) == 19
+    assert len(results) == 15
 
 
 def test_get_recognizers_returns_predefined(nlp_engine):
@@ -669,7 +664,7 @@ def test_get_recognizers_returns_predefined(nlp_engine):
     request = RecognizersAllRequest(language="en")
     response = analyze_engine.GetAllRecognizers(request, None)
     # there are 16 predefined recognizers that detect the 17 entities
-    assert len(response) == 15
+    assert len(response) == 14
 
 
 def test_get_recognizers_returns_custom():
@@ -687,7 +682,7 @@ def test_get_recognizers_returns_custom():
     request = RecognizersAllRequest(language="en")
     response = analyze_engine.GetAllRecognizers(request, None)
     # there are 16 predefined recognizers and one custom
-    assert len(response) == 16
+    assert len(response) == 15
     rocket_recognizer = [
         recognizer
         for recognizer in response
@@ -712,12 +707,12 @@ def test_get_recognizers_returns_added_custom():
     )
     request = RecognizersAllRequest(language="en")
     response = analyze_engine.GetAllRecognizers(request, None)
-    # there are 16 predefined recognizers
-    assert len(response) == 15
+    # there are 14 predefined recognizers
+    assert len(response) == 14
     recognizers_store_api_mock.add_custom_pattern_recognizer(pattern_recognizer)
     response = analyze_engine.GetAllRecognizers(request, None)
-    # there are 16 predefined recognizers and one custom
-    assert len(response) == 16
+    # there are 14 predefined recognizers and one custom
+    assert len(response) == 15
 
 
 def test_get_recognizers_returns_supported_language():

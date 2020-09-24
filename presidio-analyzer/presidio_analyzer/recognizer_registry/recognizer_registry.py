@@ -5,7 +5,6 @@ import os
 from presidio_analyzer.recognizer_registry import RecognizerStoreApi
 from presidio_analyzer import PresidioLogger
 from presidio_analyzer.predefined_recognizers import (
-    NLP_RECOGNIZERS,
     CreditCardRecognizer,
     CryptoRecognizer,
     DomainRecognizer,
@@ -20,7 +19,6 @@ from presidio_analyzer.predefined_recognizers import (
     UsPhoneRecognizer,
     UsSsnRecognizer,
     SgFinRecognizer,
-    SpacyRecognizer,
     TextAnalyticsRecognizer,
 )
 
@@ -64,7 +62,7 @@ class RecognizerRegistry:
         else:
             self.enable_text_analytics_recognizer = False
 
-    def load_predefined_recognizers(self, languages=None, nlp_engine="spacy"):
+    def load_predefined_recognizers(self, languages=None):
         #   TODO: Change the code to dynamic loading -
         # Task #598:  Support loading of the pre-defined recognizers
         # from the given path.
@@ -75,7 +73,6 @@ class RecognizerRegistry:
         if not languages:
             languages = ["en"]
 
-        #NlpRecognizer = NLP_RECOGNIZERS.get(nlp_engine, SpacyRecognizer) uncomment to register spacy
         recognizers_map = {
             "en": [
                 UsBankRecognizer,
@@ -94,7 +91,6 @@ class RecognizerRegistry:
                 EmailRecognizer,
                 IbanRecognizer,
                 IpRecognizer,
-                NlpRecognizer
             ],
         }
         for lang in languages:
