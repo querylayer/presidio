@@ -16,8 +16,8 @@ class TextAnalyticsDal:  # pylint: disable=too-many-instance-attributes
         self.tolerate_errors = tolerate_errors
         self.endpoint = os.environ.get('TEXT_ANALYTICS_ENDPOINT')
         self.key = os.environ.get('TEXT_ANALYTICS_KEY')
-        self.api_path = '/text/analytics/v3.0-preview.1/entities/recognition/'
-        self.api_classes = ['general', 'pii']  # request both general data and pii data
+        self.api_path = '/text/analytics/v3.0/entities/recognition/'
+        self.api_classes = ['general']  # request both general data and pii data
         self.failed_to_load = False
 
         error_message = 'TextAnalyticsRecognizer cannot work without {}.'

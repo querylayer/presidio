@@ -251,16 +251,16 @@ class TextAnalyticsRecognizer(RemoteRecognizer):
 
         for entity in svc_response['documents'][0]['entities']:
             entity_type = TextAnalyticsRecognizer.__convert_to_presidio_type(
-                entity['type'],
-                subtype=entity.get('subtype')
+                entity['category'],
+                subtype=entity.get('subcategory')
                 )
 
             recognizer_result = \
                 RecognizerResult(entity_type,
                                  entity['offset'],
                                  entity['offset'] + entity['length'],
-                                 entity['score'],
-                                 self.DEFAULT_EXPLANATION.format(entity['type']))
+                                 entity['confidenceScore'],
+                                 self.DEFAULT_EXPLANATION.format(entity['category']))
             result.append(recognizer_result)
         return result
 
